@@ -1,0 +1,144 @@
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: "NGESO Wider Access Health Check"
+  description: >-
+    The health API will be used to:  
+  
+    
+    a) check that the Wider Access API hosted on NG ESO is reachable  
+    
+    
+    b) & return the status of each individual API
+    
+    This API is meant to be used internally by NG ESO, but not by the Wider Access Participants
+  license:
+    name: NGESO
+    url: https://www.nationalgrideso.com/terms-and-conditions
+host: api.wa.nationalgrid.com
+basePath: /ngeso/v1
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+tags:
+  - name: Health
+    description: API Health
+paths:
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Checks the health of each of the Wider Access APIs published by NG ESO
+      produces:
+      - application/json
+      parameters:
+      - name: "OSCGAppKeyHeader"
+        in: "header"
+        required: true
+        type: "string"
+        description: "API Key"
+      - name: "OSCGOAuthBearer"
+        in: "header"
+        required: true
+        type: "string"
+        description: "OAuth2 Token"
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/NGESOHealth'
+          examples:
+            application/json:
+            - APIs:
+              - apiname: 'submission'
+                status: 'Up'
+              - apiname: 'resubmission'
+                status: 'Down'
+              - apiname: 'metering'
+                status: 'Up'
+              version: '1.0'
+              timestamp: '2018-10-14T12:00:00.123Z'
+        401:
+          description: Unauthorized.
+          schema:
+              $ref: '#/definitions/Error'
+          examples:
+            application/json:
+              - message: "Not Authorized"
+                code: '401'
+                detail: 'The Token has expired'
+                datetime: '2018-10-14T12:00:00.123Z'
+        404:
+          description: Not Found
+          schema:
+              $ref: '#/definitions/Error'
+          examples:
+            application/json:
+              - message: "Resource not found"
+                code: '404'
+                detail: 'Resource not found'
+                timestamp: '2018-10-14T12:00:00.123Z'
+        500:
+          description: Internal Server Error
+          schema:
+              $ref: '#/definitions/Error'
+          examples:
+            application/json:
+              - message: "Error message on the server side"
+                code: '500'
+                detail: 'Detailed error message'
+                timestamp: '2018-10-14T12:00:00.123Z'              
+
+definitions:
+  NGESOHealth:
+    title: Health of APIs
+    properties:
+      APIs:
+        type: array
+        items:
+          $ref: '#/definitions/APIHealth'
+      version:
+        type: string
+        example: '1.0'
+      timestamp:
+        type: string
+        example: '2018-10-14T12:00:00.123Z'
+  APIHealth:
+    title: Health of an API
+    type: object
+    required:
+      - apiname
+      - status
+    properties:
+      apiname:
+        type: string
+        example: 'submission'
+      status:
+        type: string
+        example: 'Up'
+  Error:
+    title: Error payload
+    type: object
+    required:
+      - code
+      - message
+      - detail
+      - timestamp
+    properties:
+      code:
+        type: string
+        example: 'Error code'
+      message:
+        type: string
+        example: 'Error message'
+      detail:
+        type: string
+        example: 'Error detailed information'
+      timestamp:
+        type: string
+        example: '2018-10-14T12:00:00.123Z'
