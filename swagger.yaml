@@ -1,22 +1,21 @@
 swagger: '2.0'
 info:
   version: '1.0'
-  title: "NGESO Wider Access Health Check"
+  title: "ESO Wider Access Health Check"
   description: >-
     The health API will be used to:  
   
     
     a) check that the Wider Access API hosted on NG ESO is reachable  
-    
     b) & return the status of each individual API  
     
     
     This API is meant to be used internally by NG ESO, but not by the Wider Access Participants
   license:
-    name: NGESO
-    url: https://www.nationalgrideso.com/terms-and-conditions
-host: api.wa.nationalgrid.com
-basePath: /ngeso/v1
+    name: ESO
+    url: https://www.manantialblueeso.com/terms-and-conditions
+host: api.wa.manantialblue.com
+basePath: /eso/v1
 schemes:
 - https
 consumes:
@@ -51,7 +50,7 @@ paths:
           schema:
             type: object
             items:
-              $ref: '#/definitions/NGESOHealth'
+              $ref: '#/definitions/ESOHealth'
           examples:
             application/json:
             - APIs:
@@ -95,7 +94,7 @@ paths:
                 timestamp: '2018-10-14T12:00:00.123Z'              
 
 definitions:
-  NGESOHealth:
+  ESOHealth:
     title: Health of APIs
     properties:
       APIs:
